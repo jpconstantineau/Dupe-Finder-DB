@@ -20,8 +20,11 @@ async function asyncWriteToDB(data) {
 	//const rows = await conn.query("SELECT 1 as val");
 	//console.log(rows); //[ {val: 1}, meta: ... ]
   const query = "INSERT INTO files(hostname, folderhash, hash, path, name, extension, size, created, modified, accessed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";   
-  const insertdata = [data.hostname, data.subfolderHash, data.hash, data.path, data.name, data.extension, data.size, data.created, data.modified, data.accessed];
-  console.log("MariaDB INSERT" + data.hash);
+  const insertdata = [data.hostname, data.subfolderHash, data.hash, data.path, data.name, data.extension, data.size, 
+    STR_TO_DATE(data.created,'%d/%m/%Y %H:%i:%s'), 
+    STR_TO_DATE(data.modified,'%d/%m/%Y %H:%i:%s'), 
+    STR_TO_DATE(data.accessed,'%d/%m/%Y %H:%i:%s')];
+  //console.log("MariaDB INSERT" + data.hash);
   const res = await conn.query(query, insertdata);
 	console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
 
