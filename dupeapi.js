@@ -8,6 +8,7 @@ const pool = mariadb.createPool({
      host: 'localhost', 
      user:'root', 
      password: '',
+     database: "DupeDB",
      connectionLimit: 5
 });
 
@@ -18,7 +19,7 @@ async function asyncWriteToDB(data) {
 	conn = await pool.getConnection();
 	//const rows = await conn.query("SELECT 1 as val");
 	//console.log(rows); //[ {val: 1}, meta: ... ]
-  const query = "USE DupeDB; INSERT INTO files value (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"   
+  const query = "INSERT INTO files value (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"   
   const insertdata = [data.hostname, data.subfolderHash, data.hash, data.path, data.name, data.extension, data.size, data.created, data.modified, data.accessed];
   const res = await conn.query(query, insertdata);
 	console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
