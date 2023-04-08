@@ -18,3 +18,7 @@ CREATE TABLE IF NOT EXISTS files (
 
 CREATE UNIQUE INDEX index_files ON files ( hostname, path, folderhash, hash);
 
+
+USE DupeDB;
+
+SELECT * FROM files;
