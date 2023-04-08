@@ -21,11 +21,13 @@ async function asyncWriteToDB(data) {
 	//console.log(rows); //[ {val: 1}, meta: ... ]
   const query = "INSERT INTO files value (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"   
   const insertdata = [data.hostname, data.subfolderHash, data.hash, data.path, data.name, data.extension, data.size, data.created, data.modified, data.accessed];
+  console.log("MariaDB INSERT" + data.hash);
   const res = await conn.query(query, insertdata);
 	console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
 
   } catch (err) {
-	throw err;
+    console.log(err);
+	  throw err;
   } finally {
 	if (conn) return conn.end();
   }
