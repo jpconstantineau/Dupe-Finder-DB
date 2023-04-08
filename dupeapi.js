@@ -18,10 +18,10 @@ async function asyncWriteToDB(data) {
 	conn = await pool.getConnection();
 	//const rows = await conn.query("SELECT 1 as val");
 	//console.log(rows); //[ {val: 1}, meta: ... ]
-  const query = "INSERT INTO files value (?, ?)" + data.hostname + data.path + data.name + data.extension + data.size + data.created + data.modified + data.accessed + data.hash + data.subfolderHash;
-  console.log(query);
-  //	const res = await conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
-//	console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
+  const query = "USE DupeDB; INSERT INTO files value (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"   
+  const insertdata = [data.hostname, data.subfolderHash, data.hash, data.path, data.name, data.extension, data.size, data.created, data.modified, data.accessed];
+  const res = await conn.query(query, insertdata);
+	console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
 
   } catch (err) {
 	throw err;
