@@ -16,9 +16,11 @@ async function asyncWriteToDB(data) {
   let conn;
   try {
 	conn = await pool.getConnection();
-	const rows = await conn.query("SELECT 1 as val");
-	console.log(rows); //[ {val: 1}, meta: ... ]
-//	const res = await conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
+	//const rows = await conn.query("SELECT 1 as val");
+	//console.log(rows); //[ {val: 1}, meta: ... ]
+  const query = "INSERT INTO files value (?, ?)" + data.hostname + data.path + data.name + data.extension + data.size + data.created + data.modified + data.accessed + data.hash + data.subfolderhash;
+  console.log(query);
+  //	const res = await conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
 //	console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
 
   } catch (err) {
@@ -41,7 +43,7 @@ app.get("/", (req, res) => {
 app.post("/file", (req, res) => {
 //    console.log(req.body);
     console.log(req.body.hostname+":"+req.body.path+"/"+req.body.name);
-    asyncWriteToDB(data);
+    asyncWriteToDB(req.body);
     res.status(201).json({ message: req.body.hash });    
   });
   
