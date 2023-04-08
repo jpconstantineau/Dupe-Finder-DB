@@ -19,7 +19,7 @@ async function asyncWriteToDB(data) {
 	conn = await pool.getConnection();
 	//const rows = await conn.query("SELECT 1 as val");
 	//console.log(rows); //[ {val: 1}, meta: ... ]
-  const query = "INSERT INTO files value (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"   
+  const query = "INSERT INTO files(hostname, folderhash, hash, path, name, extension, size, created, modified, accessed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";   
   const insertdata = [data.hostname, data.subfolderHash, data.hash, data.path, data.name, data.extension, data.size, data.created, data.modified, data.accessed];
   console.log("MariaDB INSERT" + data.hash);
   const res = await conn.query(query, insertdata);
