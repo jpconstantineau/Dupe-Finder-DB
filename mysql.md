@@ -13,15 +13,12 @@ CREATE TABLE IF NOT EXISTS files (
     name varchar(255) NOT NULL,
     extension varchar(32) NOT NULL,
     size BIGINT,
-    created DATE, 
-    modified DATE,
-    accessed DATE,
+    created DATETIME, 
+    modified DATETIME,
+    accessed DATETIME,
     PRIMARY KEY (FileID));
 
-CREATE UNIQUE INDEX index_files ON files ( hostname, path, folderhash, hash);
-
 CREATE  INDEX index_files ON files ( hostname, folderhash, hash);
-
 
 USE DupeDB;
 

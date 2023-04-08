@@ -13,6 +13,18 @@ const pool = mariadb.createPool({
 });
 
 
+function twoDigits(d) {
+  if(0 <= d && d < 10) return "0" + d.toString();
+  if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+  return d.toString();
+}
+
+Date.prototype.toMysqlFormat = function() {
+  return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
+};
+
+
+
 async function asyncWriteToDB(data) {
   let conn;
   try {
@@ -20,10 +32,13 @@ async function asyncWriteToDB(data) {
 	//const rows = await conn.query("SELECT 1 as val");
 	//console.log(rows); //[ {val: 1}, meta: ... ]
   const query = "INSERT INTO files(hostname, folderhash, hash, path, name, extension, size, created, modified, accessed) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";   
+  var created = new Date(data.created);
+  var modified = new Date(data.modified);
+  var accessed = new Date(data.accessed);
   const insertdata = [data.hostname, data.subfolderHash, data.hash, data.path, data.name, data.extension, data.size, 
-    data.created.toLocaleFormat("%Y-%m-%d %H:%M:%S"), 
-    data.modified.toLocaleFormat("%Y-%m-%d %H:%M:%S"), 
-    data.accessed.toLocaleFormat("%Y-%m-%d %H:%M:%S")];
+    created.toMysqlFormat(), 
+    modified.toMysqlFormat(), 
+    accessed.toMysqlFormat()];
   //console.log("MariaDB INSERT" + data.hash);
   const res = await conn.query(query, insertdata);
 	console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
