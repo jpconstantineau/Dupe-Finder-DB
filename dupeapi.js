@@ -209,7 +209,7 @@ app.post("/agent", async (req, res) => {
                   +  ") LIMIT 1;";
       const rows = await conn.query(query);
         console.log(rows);
-      let response = { agentid: rows[0].ID };
+      let response = { rows };
       
     } catch (err) {
       console.log(err);
