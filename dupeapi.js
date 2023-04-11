@@ -195,6 +195,13 @@ app.post("/agent", async (req, res) => {
 
       // check if hostname already exists
       //asyncWriteToDB(req.body);
+
+      let response = [];
+      let conn;
+      try {
+      conn = await pool.getConnection();
+    
+
       const query = "INSERT INTO agents (hostname,statusID,created,accessed)"
                   +  "SELECT * FROM ('"+req.body.hostname+"' AS hostname, 1 AS statusID, NOW() as created, NOW() as accessed) AS temp"
                   +  "WHERE NOT EXISTS ("
@@ -203,8 +210,17 @@ app.post("/agent", async (req, res) => {
       const rows = await conn.query(query);
         console.log(rows);
       let response = { agentid: rows[0].ID };
-      res.status(201).json(response);    
-    });
+      
+    } catch (err) {
+      console.log(err);
+      throw err;
+    } finally {
+    if (conn) return conn.end();
+  
+    res.status(201).json(response);
+    }    
+    }
+    );
 /********************************/
 /* Root Folder CONTROLLER API   */
 
