@@ -173,7 +173,7 @@ app.get("/agent/:agentid", async (req, res)  =>  {
     throw err;
   } finally {
   if (conn) return conn.end();
-  res.status(200).json(response).end();
+  res.status(200).json(response).set("Connection", "close");
   }
 });
 
