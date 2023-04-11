@@ -28,9 +28,9 @@ async function DBInit() {
   console.log(resstatusf);
   const reshosts = await conn.query('CREATE TABLE IF NOT EXISTS agents ( ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, hostname varchar(255) NOT NULL, statusID INT, created DATETIME, accessed DATETIME, CONSTRAINT fk_status_agent FOREIGN KEY (statusID) REFERENCES status_agent(ID));');
   console.log(reshosts);
-  const resfolderroot = await conn.query('CREATE TABLE IF NOT EXISTS folders_root(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, path varchar(255) not null, statusID INT, CONSTRAINT fk_status_folder_root FOREIGN KEY (statusID) REFERENCES status_folder(ID) );');
+  const resfolderroot = await conn.query('CREATE TABLE IF NOT EXISTS folders_root(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, path varchar(255) not null, statusID INT, agentID INT, CONSTRAINT fk_root_agent FOREIGN KEY (agentID) REFERENCES agents(ID), CONSTRAINT fk_status_folder_root FOREIGN KEY (statusID) REFERENCES status_folder(ID) );');
   console.log(resfolderroot);
-  const resfolderall = await conn.query('CREATE TABLE IF NOT EXISTS folders_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, parent_folder BIGINT,  CONSTRAINT fk_status_folder_all FOREIGN KEY (statusID) REFERENCES status_folder(ID), CONSTRAINT fk_folder_parent FOREIGN KEY (parent_folder) REFERENCES folders_all(ID));');
+  const resfolderall = await conn.query('CREATE TABLE IF NOT EXISTS folders_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, parent_folder BIGINT, agentID INT, CONSTRAINT fk_folder_agent FOREIGN KEY (agentID) REFERENCES agents(ID), CONSTRAINT fk_status_folder_all FOREIGN KEY (statusID) REFERENCES status_folder(ID), CONSTRAINT fk_folder_parent FOREIGN KEY (parent_folder) REFERENCES folders_all(ID));');
   console.log(resfolderall);  
   const resfileall = await conn.query('CREATE TABLE IF NOT EXISTS files_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, parent_folder BIGINT NOT NULL,  CONSTRAINT fk_status_file_all FOREIGN KEY (statusID) REFERENCES status_file(ID), CONSTRAINT fk_folder_parent_file FOREIGN KEY (parent_folder) REFERENCES folders_all(ID));');
   console.log(resfileall);  
