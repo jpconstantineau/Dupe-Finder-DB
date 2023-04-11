@@ -22,4 +22,15 @@ CREATE  INDEX index_files ON files ( hostname, folderhash, hash);
 
 USE DupeDB;
 
-SELECT * FROM files;
+SELECT count(hash) as total FROM files;
+
+
+SELECT hash, count(hash) as identified, sum(size) as size FROM files
+GROUP BY hash ORDER BY size DESC LIMIT 10;
+
+SELECT * FROM 
+(SELECT hash, count(hash) as identified, sum(size) as size FROM files
+GROUP BY hash) as data
+where identified > 1
+ORDER BY size DESC LIMIT 10;
+

@@ -13,19 +13,6 @@ const pool = mariadb.createPool({
 });
 
 
-async function DBInit() {
-  const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
-  const resstatusa = await conn.query('CREATE TABLE IF NOT EXISTS status_agent (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
-  const resstatusr = await conn.query('CREATE TABLE IF NOT EXISTS status_folder (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
-  const resstatusf = await conn.query('CREATE TABLE IF NOT EXISTS status_file (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
-  const reshosts = await conn.query('CREATE TABLE IF NOT EXISTS agents ( ID INT NOT NULL AUTO_INCREMENT, hostname varchar(255) NOT NULL, created DATETIME, accessed DATETIME, CONSTRAINT fk_status_agent FOREIGN KEY (statusID) REFERENCES status_agent(ID), PRIMARY KEY (ID));');
-  const resfolderroot = await conn.query('CREATE TABLE IF NOT EXISTS folders_root(ID INT AUTO_INCREMENT PRIMARY KEY, path varchar(255) not null, CONSTRAINT fk_status_folder_root FOREIGN KEY (statusID) REFERENCES status_folder(ID), PRIMARY KEY (ID));');
-  const resfolderall = await conn.query('CREATE TABLE IF NOT EXISTS folders_all(ID INT AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, CONSTRAINT fk_status_folder_all FOREIGN KEY (statusID) REFERENCES status_folder(ID), PRIMARY KEY (ID));');
-}
-
-
-
-
 function twoDigits(d) {
   if(0 <= d && d < 10) return "0" + d.toString();
   if(-10 < d && d < 0) return "-0" + (-1*d).toString();
@@ -64,8 +51,6 @@ async function asyncWriteToDB(data) {
   }
 }
 
-DBInit();
-
 
 app.use(express.json());
 app.use(
@@ -86,4 +71,3 @@ app.post("/file", (req, res) => {
 app.listen(port, () => {
   console.log(`DupeFinderDB listening at http://localhost:${port}`);
 });
-
