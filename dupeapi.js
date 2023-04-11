@@ -26,11 +26,11 @@ async function DBInit() {
   console.log(resstatusr);
   const resstatusf = await conn.query('CREATE TABLE IF NOT EXISTS status_file (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID))');
   console.log(resstatusf);
-  const reshosts = await conn.query('CREATE TABLE IF NOT EXISTS agents ( ID INT NOT NULL AUTO_INCREMENT, hostname varchar(255) NOT NULL, created DATETIME, accessed DATETIME, CONSTRAINT fk_status_agent FOREIGN KEY (statusID) REFERENCES status_agent(ID), PRIMARY KEY (ID));');
+  const reshosts = await conn.query('CREATE TABLE IF NOT EXISTS agents ( ID INT NOT NULL AUTO_INCREMENT, hostname varchar(255) NOT NULL, statusID INT, created DATETIME, accessed DATETIME, CONSTRAINT fk_status_agent FOREIGN KEY (statusID) REFERENCES status_agent(ID), PRIMARY KEY (ID));');
   console.log(reshosts);
-  const resfolderroot = await conn.query('CREATE TABLE IF NOT EXISTS folders_root(ID INT AUTO_INCREMENT PRIMARY KEY, path varchar(255) not null, CONSTRAINT fk_status_folder_root FOREIGN KEY (statusID) REFERENCES status_folder(ID), PRIMARY KEY (ID));');
+  const resfolderroot = await conn.query('CREATE TABLE IF NOT EXISTS folders_root(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, path varchar(255) not null, statusID INT, CONSTRAINT fk_status_folder_root FOREIGN KEY (statusID) REFERENCES status_folder(ID), PRIMARY KEY (ID));');
   console.log(resfolderroot);
-  const resfolderall = await conn.query('CREATE TABLE IF NOT EXISTS folders_all(ID INT AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, CONSTRAINT fk_status_folder_all FOREIGN KEY (statusID) REFERENCES status_folder(ID), PRIMARY KEY (ID));');
+  const resfolderall = await conn.query('CREATE TABLE IF NOT EXISTS folders_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, CONSTRAINT fk_status_folder_all FOREIGN KEY (statusID) REFERENCES status_folder(ID), PRIMARY KEY (ID));');
   console.log(resfolderall);  
   } catch (err) {
     console.log(err);
