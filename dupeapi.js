@@ -30,9 +30,9 @@ async function DBInit() {
   console.log(reshosts);
   const resfolderroot = await conn.query('CREATE TABLE IF NOT EXISTS folders_root(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, path varchar(255) not null, statusID INT, CONSTRAINT fk_status_folder_root FOREIGN KEY (statusID) REFERENCES status_folder(ID) );');
   console.log(resfolderroot);
-  const resfolderall = await conn.query('CREATE TABLE IF NOT EXISTS folders_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, parent_folder BIGINT,  CONSTRAINT fk_status_folder_all FOREIGN KEY (statusID) REFERENCES status_folder(ID) CONSTRAINT fk_folder_parent FOREIGN KEY (parent_folder) REFERENCES folders_all(ID));');
+  const resfolderall = await conn.query('CREATE TABLE IF NOT EXISTS folders_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, parent_folder BIGINT,  CONSTRAINT fk_status_folder_all FOREIGN KEY (statusID) REFERENCES status_folder(ID), CONSTRAINT fk_folder_parent FOREIGN KEY (parent_folder) REFERENCES folders_all(ID));');
   console.log(resfolderall);  
-  const resfileall = await conn.query('CREATE TABLE IF NOT EXISTS files_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, parent_folder BIGINT NOT NULL,  CONSTRAINT fk_status_file_all FOREIGN KEY (statusID) REFERENCES status_files(ID) CONSTRAINT fk_folder_parent FOREIGN KEY (parent_folder) REFERENCES folders_all(ID));');
+  const resfileall = await conn.query('CREATE TABLE IF NOT EXISTS files_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, parent_folder BIGINT NOT NULL,  CONSTRAINT fk_status_file_all FOREIGN KEY (statusID) REFERENCES status_files(ID), CONSTRAINT fk_folder_parent_file FOREIGN KEY (parent_folder) REFERENCES folders_all(ID));');
   console.log(resfileall);  
 
   } catch (err) {
