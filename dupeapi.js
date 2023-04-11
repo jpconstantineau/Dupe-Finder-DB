@@ -201,7 +201,6 @@ app.post("/agent", async (req, res) => {
       try {
       conn = await pool.getConnection();
     
-
       const query = "INSERT INTO agents (hostname,statusID,created,accessed) "
                   +  "SELECT * FROM (SELECT '"+req.body.hostname+"' AS hostname, 1 AS statusID, NOW() as created, NOW() as accessed) AS temp "
                   +  "WHERE NOT EXISTS ("
@@ -225,6 +224,33 @@ app.post("/agent", async (req, res) => {
     );
 /********************************/
 /* Root Folder CONTROLLER API   */
+app.post("/rootfolder", async (req, res) => {
+  console.log('POST /rootfolder '+ req.body);
+  let response = {};
+  let conn;
+  try{
+    conn = await pool.getConnection();
+    const query = "INSERT INTO folders_root (path,statusID,agentID) "
+                +  "SELECT * FROM (SELECT '"+req.body.path+"' AS path, 1 AS statusID, " +req.body.agentid+ " as agentID) AS temp "
+                +  "WHERE NOT EXISTS ("
+                +  "SELECT ID FROM folders_root WHERE agentID = '"+req.body.agentid+"' AND path = '" + req.body.path + "'"
+                +  ") LIMIT 1;";
+    const rows = await conn.query(query);
+    console.log(rows);
+    let response = { rows };
+
+} catch (err) {
+  console.log(err);
+  throw err;
+} finally {
+if (conn) return conn.end();
+
+res.status(201);
+res.json(response);
+res.end();
+}    
+
+});
 
 
 /********************************/
