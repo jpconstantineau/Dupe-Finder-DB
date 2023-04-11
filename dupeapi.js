@@ -202,8 +202,8 @@ app.post("/agent", async (req, res) => {
       conn = await pool.getConnection();
     
 
-      const query = "INSERT INTO agents (hostname,statusID,created,accessed)"
-                  +  "SELECT * FROM ('"+req.body.hostname+"' AS hostname, 1 AS statusID, NOW() as created, NOW() as accessed) AS temp"
+      const query = "INSERT INTO agents (hostname,statusID,created,accessed) "
+                  +  "SELECT * FROM ('"+req.body.hostname+"' AS hostname, 1 AS statusID, NOW() as created, NOW() as accessed) AS temp "
                   +  "WHERE NOT EXISTS ("
                   +  "SELECT ID FROM agents WHERE hostname = '"+req.body.hostname+"'"
                   +  ") LIMIT 1;";
