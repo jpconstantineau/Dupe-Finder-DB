@@ -155,7 +155,7 @@ app.post("/file", (req, res) => {
 // Get is used for getting the agent id to get roots
 app.get("/agent/:agentid", async (req, res)  =>  {
   console.log('/agent/:agentid '+req.params.agentid);
-
+  let response = [];
   let conn;
   try {
 	conn = await pool.getConnection();
@@ -164,14 +164,18 @@ app.get("/agent/:agentid", async (req, res)  =>  {
 
 	const rows = await conn.query("SELECT ID FROM agents where hostname ='" + req.params.agentid + "'");
 	console.log(rows); //[ {val: 1}, meta: ... ]
+  if (rows.length > 0)
+  {
+    response = { agentid: rows[0].ID };
+  }
   } catch (err) {
     console.log(err);
     throw err;
   } finally {
   if (conn) return conn.end();
-  res.json({ agentid: rows[0].ID });
+
+  res.json(response);
   }
-  
 });
 
 
@@ -179,9 +183,20 @@ app.get("/agent/:agentid", async (req, res)  =>  {
 app.post("/agent", (req, res) => {
   //    console.log(req.body);
       console.log('/agent '+ req.body.hostname);
+
+/*
+      INSERT INTO agents (hostname,statusID,created,accessed)
+      SELECT * FROM ('req.body.hostname' AS hostname, 1 AS statusID, NOW() as created, NOW() as accessed) AS temp
+      WHERE NOT EXISTS (
+      SELECT ID FROM agents WHERE hostname = 'req.body.hostname'
+      ) 
+      LIMIT 1;
+*/
+
       // check if hostname already exists
       //asyncWriteToDB(req.body);
-      res.status(201).json({ message: req.body.hash });    
+      let response = { agentid: rows[0].ID };
+      res.status(201).json(response);    
     });
 /********************************/
 /* Root Folder CONTROLLER API   */
