@@ -14,7 +14,9 @@ const pool = mariadb.createPool({
 
 
 async function DBInit() {
+  console.log('initianilizing DB');
   const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
+  console.log(resdb);
   const resstatusa = await conn.query('CREATE TABLE IF NOT EXISTS status_agent (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
   const resstatusr = await conn.query('CREATE TABLE IF NOT EXISTS status_folder (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
   const resstatusf = await conn.query('CREATE TABLE IF NOT EXISTS status_file (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
