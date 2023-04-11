@@ -216,7 +216,7 @@ app.post("/agent", async (req, res) => {
     } finally {
     if (conn) return conn.end();
   
-    res.status(201).json(response);
+    res.status(201).json(response).end();
     }    
     }
     );
