@@ -173,7 +173,9 @@ app.get("/agent/:agentid", async (req, res)  =>  {
     throw err;
   } finally {
   if (conn) return conn.end();
-  res.status(200).json(response).set("Connection", "close");
+  res.status(200);
+  res.json(response);
+  res.set("Connection", "close");
   }
 });
 
@@ -216,7 +218,9 @@ app.post("/agent", async (req, res) => {
     } finally {
     if (conn) return conn.end();
   
-    res.status(201).json(response).end();
+    res.status(201);
+    res.json(response);
+    res.end();
     }    
     }
     );
