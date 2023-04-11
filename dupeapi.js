@@ -86,8 +86,7 @@ async function DBInit() {
 }
 
 
-
-
+/****** UTILITY FUNCTIONS **** */
 function twoDigits(d) {
   if(0 <= d && d < 10) return "0" + d.toString();
   if(-10 < d && d < 0) return "-0" + (-1*d).toString();
@@ -100,6 +99,22 @@ Date.prototype.toMysqlFormat = function() {
 
 
 
+/****** Express Setup **** */
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+/***********************************/
+/** ROOT endpoint  - used for nothing... */
+app.get("/", (req, res) => {
+  res.json({ message: "ok" });
+});
+
+/***********************************/
+/* LEGACY ENDPOINT FOR OLD SCANNER */
 async function asyncWriteToDB(data) {
   let conn;
   try {
@@ -126,26 +141,78 @@ async function asyncWriteToDB(data) {
   }
 }
 
-DBInit();
 
-
-app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-app.get("/", (req, res) => {
-  res.json({ message: "ok" });
-});
 app.post("/file", (req, res) => {
 //    console.log(req.body);
     console.log(req.body.hostname+":"+req.body.path+"/"+req.body.name);
     asyncWriteToDB(req.body);
     res.status(201).json({ message: req.body.hash });    
   });
+
+
+/********************************/
+/* Agent CONTROLLER API         */
+// Get is used for getting the agent id to get roots
+app.get("/agent/:agentid", async (req, res)  =>  {
+  console.log('/agent/:agentid '+req.params.agentid);
+
+  let conn;
+  try {
+	conn = await pool.getConnection();
+
+  // SELECT ID FROM agents where hostname = req.params.agentid
+
+	const rows = await conn.query("SELECT ID FROM agents where hostname ='" + req.params.agentid + "'");
+	console.log(rows); //[ {val: 1}, meta: ... ]
+  } catch (err) {
+    console.log(err);
+    throw err;
+  } finally {
+  if (conn) return conn.end();
+  res.json({ agentid: rows[0].ID });
+  }
   
+});
+
+
+// post is used for the initial setup of the agent in the db
+app.post("/agent", (req, res) => {
+  //    console.log(req.body);
+      console.log('/agent '+ req.body.hostname);
+      // check if hostname already exists
+      //asyncWriteToDB(req.body);
+      res.status(201).json({ message: req.body.hash });    
+    });
+/********************************/
+/* Root Folder CONTROLLER API   */
+
+
+/********************************/
+/* Generic Folder CONTROLLER API */
+
+
+/********************************/
+/* Generic File  CONTROLLER API */
+
+
+/********************************/
+/* Hasher        CONTROLLER API */
+
+
+/********************************/
+/* File Deleter  CONTROLLER API */
+
+
+/********************************/
+/* Folder Deleter CONTROLLER API */
+
+
+/********************************/
+/** Initializing APP DB */
+DBInit();
+
+/** Starting API */
 app.listen(port, () => {
-  console.log(`DupeFinderDB listening at http://localhost:${port}`);
+  console.log(`DupeFinderDB-API listening at http://localhost:${port}`);
 });
 
