@@ -20,11 +20,11 @@ async function DBInit() {
   try {
   const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
   console.log(resdb);
-  const resstatusa = await conn.query('CREATE TABLE IF NOT EXISTS status_agent (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
+  const resstatusa = await conn.query('CREATE TABLE IF NOT EXISTS status_agent (ID INT NOT NULL AUTO_INCREMENT, name varchar(100) not null, PRIMARY KEY (ID))');
   console.log(resstatusa);
-  const resstatusr = await conn.query('CREATE TABLE IF NOT EXISTS status_folder (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
+  const resstatusr = await conn.query('CREATE TABLE IF NOT EXISTS status_folder (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID))');
   console.log(resstatusr);
-  const resstatusf = await conn.query('CREATE TABLE IF NOT EXISTS status_file (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID)');
+  const resstatusf = await conn.query('CREATE TABLE IF NOT EXISTS status_file (ID INT NOT NULL AUTO_INCREMENT,name varchar(100) not null, PRIMARY KEY (ID))');
   console.log(resstatusf);
   const reshosts = await conn.query('CREATE TABLE IF NOT EXISTS agents ( ID INT NOT NULL AUTO_INCREMENT, hostname varchar(255) NOT NULL, created DATETIME, accessed DATETIME, CONSTRAINT fk_status_agent FOREIGN KEY (statusID) REFERENCES status_agent(ID), PRIMARY KEY (ID));');
   console.log(reshosts);
