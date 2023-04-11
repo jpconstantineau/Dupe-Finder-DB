@@ -180,7 +180,7 @@ app.get("/agent/:agentid", async (req, res)  =>  {
 
 
 // post is used for the initial setup of the agent in the db
-app.post("/agent", (req, res) => {
+app.post("/agent", async (req, res) => {
   //    console.log(req.body);
       console.log('/agent '+ req.body.hostname);
 
@@ -195,6 +195,13 @@ app.post("/agent", (req, res) => {
 
       // check if hostname already exists
       //asyncWriteToDB(req.body);
+      const query = "INSERT INTO agents (hostname,statusID,created,accessed)"
+                  +  "SELECT * FROM ('"+req.body.hostname+"' AS hostname, 1 AS statusID, NOW() as created, NOW() as accessed) AS temp"
+                  +  "WHERE NOT EXISTS ("
+                  +  "SELECT ID FROM agents WHERE hostname = '"+req.body.hostname+"'"
+                  +  ") LIMIT 1;";
+      const rows = await conn.query(query);
+        console.log(rows);
       let response = { agentid: rows[0].ID };
       res.status(201).json(response);    
     });
