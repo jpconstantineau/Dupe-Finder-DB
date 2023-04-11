@@ -226,6 +226,7 @@ app.post("/agent", async (req, res) => {
 /* Root Folder CONTROLLER API   */
 app.post("/rootfolder", async (req, res) => {
   console.log('POST /rootfolder '+ req.body);
+  console.log(req.body);
   let response = {};
   let conn;
   try{
