@@ -4,14 +4,14 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-const pool = mariadb.createPool({
+const poolnodb = mariadb.createPool({
      host: 'localhost', 
      user:'root', 
      password: '',
      connectionLimit: 5
 });
 
-const pooldb = mariadb.createPool({
+const pool = mariadb.createPool({
   host: 'localhost', 
   user:'root', 
   password: '',
@@ -21,10 +21,21 @@ const pooldb = mariadb.createPool({
 
 
 async function DBInit() {
-//  let conn = await pooldb.getConnection();
+let conn = await poolnodb.getConnection();
+
+try {
+  const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
+  console.log(resdb);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  } finally {
+  if (conn) return conn.end();
+  }
 
 
-  conn = await pooldb.getConnection();
+
+  conn = await pool.getConnection();
 
   console.log('initializing DupeDB Tables');
   try {
