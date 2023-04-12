@@ -2,7 +2,9 @@
 import express from 'express';
 import { DBInit } from './controllers/database.js'
 
-async () => {await DBInit();}
+async () => {
+  console.log('calling DBInit');
+  await DBInit();}
 
 
 const app = express();
