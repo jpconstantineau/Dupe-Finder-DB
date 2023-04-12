@@ -21,23 +21,16 @@ const pooldb = mariadb.createPool({
 
 
 async function DBInit() {
-  let conn = await pooldb.getConnection();
-  console.log('initianilizing Tables');
+//  let conn = await pooldb.getConnection();
+
+
+  conn = await pooldb.getConnection();
+
+  console.log('initializing DupeDB Tables');
   try {
-  const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
-  console.log(resdb);
-  } catch (err) {
-    console.log(err);
-    throw err;
-  } finally {
-  if (conn) return conn.end();
-  }
-
-
-//  conn = await pooldb.getConnection();
-
-  console.log('initianilizing Tables');
-  try {
+    const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
+    console.log(resdb);
+  
   const resstatusa = await conn.query('CREATE TABLE IF NOT EXISTS status_agent (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(100) not null)');
   console.log(resstatusa);
   const resstatusr = await conn.query('CREATE TABLE IF NOT EXISTS status_folder (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name varchar(100) not null)');
