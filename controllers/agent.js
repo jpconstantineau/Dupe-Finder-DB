@@ -75,7 +75,7 @@ async function agentCalledUpdate(id)
     let conn;
     try {
             conn = await pool.getConnection();
-            const query = "UPDATE agent_details SET statusName='Ready', accessed = NOW() where ID = " + id + " ;"
+            const query = "UPDATE agents SET statusID = (SELECT ID FROM status_agent WHERE name = 'Ready'), accessed = NOW() where ID = " + id + " ;"
             const rows = await conn.query(query);
             console.log(rows); //[ {val: 1}, meta: ... ]
         } catch (err) {
