@@ -47,7 +47,7 @@ async function DBInit() {
   console.log(resfileall);  
 
 
-  const resview1 = await conn.query('CREATE VIEW agent_details AS SELECT A.ID, A.hostname, B.name as statusName, A.created, A.accessed, A.enabled FROM agents A join status_agent B ON A.statusID = B.ID;');
+  const resview1 = await conn.query('CREATE VIEW  IF NOT EXISTS agent_details AS SELECT A.ID, A.hostname, B.name as statusName, A.created, A.accessed, A.enabled FROM agents A join status_agent B ON A.statusID = B.ID;');
   console.log(resview1);  
 
   const insert1 = await conn.query('INSERT IGNORE INTO status_agent (ID, name) VALUES (1, "Created");');
