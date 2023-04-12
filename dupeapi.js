@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 import { agentInit, getAgentID, postAgent } from './controllers/agent.js'
 app.get("/agent/:agentid", getAgentID);
 app.post("/agent", postAgent );
-agentInit();
+//agentInit();
 
 /********************************/
 /* Root Folder CONTROLLER API   */
