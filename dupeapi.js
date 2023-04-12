@@ -1,10 +1,9 @@
 
+
 import express from 'express';
 import { DBInit } from './controllers/database.js'
 
-async () => {
-  console.log('calling DBInit');
-  await DBInit();}
+await DBInit();
 
 
 const app = express();
@@ -30,7 +29,7 @@ app.get("/", (req, res) => {
 import { agentInit, getAgentID, postAgent } from './controllers/agent.js'
 app.get("/agent/:agentid", getAgentID);
 app.post("/agent", postAgent );
-//agentInit();
+agentInit();
 
 /********************************/
 /* Root Folder CONTROLLER API   */
