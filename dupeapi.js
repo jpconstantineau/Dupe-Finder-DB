@@ -42,11 +42,11 @@ try {
     const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
     console.log(resdb);
   
-  const resstatusa = await conn.query('CREATE TABLE IF NOT EXISTS status_agent (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(100) not null)');
+  const resstatusa = await conn.query('CREATE TABLE IF NOT EXISTS status_agent (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(32) UNIQUE NOT NULL)');
   console.log(resstatusa);
-  const resstatusr = await conn.query('CREATE TABLE IF NOT EXISTS status_folder (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name varchar(100) not null)');
+  const resstatusr = await conn.query('CREATE TABLE IF NOT EXISTS status_folder (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name varchar(32) UNIQUE NOT NULL)');
   console.log(resstatusr);
-  const resstatusf = await conn.query('CREATE TABLE IF NOT EXISTS status_file (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name varchar(100) not null)');
+  const resstatusf = await conn.query('CREATE TABLE IF NOT EXISTS status_file (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name varchar(32) UNIQUE NOT NULL)');
   console.log(resstatusf);
   const reshosts = await conn.query('CREATE TABLE IF NOT EXISTS agents ( ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, hostname varchar(255) NOT NULL, statusID INT, created DATETIME, accessed DATETIME, enabled BOOLEAN, CONSTRAINT fk_status_agent FOREIGN KEY (statusID) REFERENCES status_agent(ID));');
   console.log(reshosts);
