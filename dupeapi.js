@@ -21,7 +21,7 @@ const pool = mariadb.createPool({
 
 
 async function DBInit() {
-let conn = await poolnodb.getConnection();
+/*let conn = await poolnodb.getConnection();
 
 try {
   const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
@@ -32,10 +32,10 @@ try {
   } finally {
   if (conn) return conn.end();
   }
+*/
 
 
-
-  conn = await pool.getConnection();
+  let conn = await pool.getConnection();
 
   console.log('initializing DupeDB Tables');
   try {
