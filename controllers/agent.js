@@ -102,7 +102,6 @@ function agentInit()
 
 async function agentCalledUpdate(id) 
 {
-    //TODO: update agent to Ready
     let conn;
     try {
             conn = await pool.getConnection();

@@ -33,8 +33,9 @@ agentInit();
 
 /********************************/
 /* Root Folder CONTROLLER API   */
-import { postRootFolder } from './controllers/rootfolder.js'
+import { folderrootInit, postRootFolder } from './controllers/rootfolder.js'
 app.post("/rootfolder", postRootFolder);
+folderrootInit();
 
 /********************************/
 /* Generic Folder CONTROLLER API */
