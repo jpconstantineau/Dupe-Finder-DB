@@ -1,15 +1,11 @@
-const mariadb = require('mariadb');
 
-const express = require("express");
+import mariadb from 'mariadb';
+import express from 'express';
+
+import { agentInit, getAgentID } from './controllers/agent.js'
+
 const app = express();
 const port = 3000;
-
-const poolnodb = mariadb.createPool({
-     host: 'localhost', 
-     user:'root', 
-     password: '',
-     connectionLimit: 5
-});
 
 const pool = mariadb.createPool({
   host: 'localhost', 
@@ -21,19 +17,6 @@ const pool = mariadb.createPool({
 
 
 async function DBInit() {
-/*let conn = await poolnodb.getConnection();
-
-try {
-  const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
-  console.log(resdb);
-  } catch (err) {
-    console.log(err);
-    throw err;
-  } finally {
-  if (conn) return conn.end();
-  }
-*/
-
 
   let conn = await pool.getConnection();
 
@@ -179,31 +162,7 @@ app.post("/file", (req, res) => {
 /********************************/
 /* Agent CONTROLLER API         */
 // Get is used for getting the agent id to get roots
-app.get("/agent/:agentid", async (req, res)  =>  {
-  console.log('/agent/:agentid '+req.params.agentid);
-  let response = [];
-  let conn;
-  try {
-	conn = await pool.getConnection();
-
-  // SELECT ID FROM agents where hostname = req.params.agentid
-
-	const rows = await conn.query("SELECT ID FROM agents where hostname ='" + req.params.agentid + "'");
-	console.log(rows); //[ {val: 1}, meta: ... ]
-  if (rows.length > 0)
-  {
-    response = { agentid: rows[0].ID };
-  }
-  } catch (err) {
-    console.log(err);
-    throw err;
-  } finally {
-  res.status(200);
-  res.json(response);
-  setTimeout(console.log, 15, 'TO DO - Call to update Agent Status');
-  if (conn) return conn.end();
-  }
-});
+app.get("/agent/:agentid", getAgentID);
 
 
 // post is used for the initial setup of the agent in the db
@@ -298,3 +257,5 @@ app.listen(port, () => {
   console.log(`DupeFinderDB-API listening at http://localhost:${port}`);
 });
 
+// Starting Controllers
+agentInit();
