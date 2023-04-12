@@ -8,25 +8,43 @@ const pool = mariadb.createPool({
      host: 'localhost', 
      user:'root', 
      password: '',
-     database: "DupeDB",
      connectionLimit: 5
+});
+
+const pooldb = mariadb.createPool({
+  host: 'localhost', 
+  user:'root', 
+  password: '',
+  database: "DupeDB",
+  connectionLimit: 5
 });
 
 
 async function DBInit() {
   let conn = await pool.getConnection();
-
-  console.log('initianilizing DB');
+  console.log('initianilizing Tables');
   try {
   const resdb = await conn.query('CREATE DATABASE IF NOT EXISTS DupeDB;');
   console.log(resdb);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  } finally {
+  if (conn) return conn.end();
+  }
+
+
+  conn = await pooldb.getConnection();
+
+  console.log('initianilizing Tables');
+  try {
   const resstatusa = await conn.query('CREATE TABLE IF NOT EXISTS status_agent (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(100) not null)');
   console.log(resstatusa);
   const resstatusr = await conn.query('CREATE TABLE IF NOT EXISTS status_folder (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name varchar(100) not null)');
   console.log(resstatusr);
   const resstatusf = await conn.query('CREATE TABLE IF NOT EXISTS status_file (ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name varchar(100) not null)');
   console.log(resstatusf);
-  const reshosts = await conn.query('CREATE TABLE IF NOT EXISTS agents ( ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, hostname varchar(255) NOT NULL, statusID INT, created DATETIME, accessed DATETIME, CONSTRAINT fk_status_agent FOREIGN KEY (statusID) REFERENCES status_agent(ID));');
+  const reshosts = await conn.query('CREATE TABLE IF NOT EXISTS agents ( ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, hostname varchar(255) NOT NULL, statusID INT, created DATETIME, accessed DATETIME, enabled BOOLEAN, CONSTRAINT fk_status_agent FOREIGN KEY (statusID) REFERENCES status_agent(ID));');
   console.log(reshosts);
   const resfolderroot = await conn.query('CREATE TABLE IF NOT EXISTS folders_root(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY, path varchar(255) not null, statusID INT, agentID INT, CONSTRAINT fk_root_agent FOREIGN KEY (agentID) REFERENCES agents(ID), CONSTRAINT fk_status_folder_root FOREIGN KEY (statusID) REFERENCES status_folder(ID) );');
   console.log(resfolderroot);
@@ -34,6 +52,10 @@ async function DBInit() {
   console.log(resfolderall);  
   const resfileall = await conn.query('CREATE TABLE IF NOT EXISTS files_all(ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name varchar(255) not null, statusID INT, parent_folder BIGINT NOT NULL,  CONSTRAINT fk_status_file_all FOREIGN KEY (statusID) REFERENCES status_file(ID), CONSTRAINT fk_folder_parent_file FOREIGN KEY (parent_folder) REFERENCES folders_all(ID));');
   console.log(resfileall);  
+
+
+  const resview1 = await conn.query('CREATE VIEW agent_details AS SELECT A.ID, A.hostname, B.name as statusName, A.created, A.accessed, A.enabled FROM agents A join status_agent B ON A.statusID = B.ID;');
+  console.log(resview1);  
 
   const insert1 = await conn.query('INSERT IGNORE INTO status_agent (ID, name) VALUES (1, "Created");');
   console.log(insert1);  
@@ -174,6 +196,7 @@ app.get("/agent/:agentid", async (req, res)  =>  {
   } finally {
   res.status(200);
   res.json(response);
+  setTimeout(console.log, 15, 'TO DO - Call to update Agent Status');
   if (conn) return conn.end();
   }
 });
@@ -184,30 +207,18 @@ app.post("/agent", async (req, res) => {
   //    console.log(req.body);
       console.log('/agent '+ req.body.hostname);
 
-/*
-      INSERT INTO agents (hostname,statusID,created,accessed)
-      SELECT * FROM ('req.body.hostname' AS hostname, 1 AS statusID, NOW() as created, NOW() as accessed) AS temp
-      WHERE NOT EXISTS (
-      SELECT ID FROM agents WHERE hostname = 'req.body.hostname'
-      ) 
-      LIMIT 1;
-*/
-
-      // check if hostname already exists
-      //asyncWriteToDB(req.body);
-
       let response = [];
       let conn;
       try {
       conn = await pool.getConnection();
     
-      const query = "INSERT INTO agents (hostname,statusID,created,accessed) "
-                  +  "SELECT * FROM (SELECT '"+req.body.hostname+"' AS hostname, 1 AS statusID, NOW() as created, NOW() as accessed) AS temp "
+      const query = "INSERT INTO agent_details (hostname,statusName,created,accessed,enabled) "
+                  +  "SELECT * FROM (SELECT '"+req.body.hostname+"' AS hostname, 'Created' AS statusName, NOW() as created, NOW() as accessed, 1 as enabled) AS temp "
                   +  "WHERE NOT EXISTS ("
                   +  "SELECT ID FROM agents WHERE hostname = '"+req.body.hostname+"'"
                   +  ") LIMIT 1;";
       const rows = await conn.query(query);
-        console.log(rows);
+      console.log(rows);
       let response = { rows };
       
     } catch (err) {
