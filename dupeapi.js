@@ -2,7 +2,8 @@
 import express from 'express';
 import { DBInit } from './controllers/database.js'
 
-DBInit();
+async () => {await DBInit();}
+
 
 const app = express();
 const port = 3000;
