@@ -68,7 +68,7 @@ const pool = mariadb.createPool({
           let conn;
           try {
                   conn = await pool.getConnection();
-                  const query = "UPDATE files_all SET statusID=(SELECT ID FROM status_file where name = 'MarkedForDeletion') where ID IN (SELECT ID FROM files_all where parent_folder IN (SELECT ID FROM folders_all where status_ID IN (SELECT ID FROM status_folder where name = 'MarkedForDeletion') ) );"
+                  const query = "UPDATE files_all SET statusID=(SELECT ID FROM status_file where name = 'MarkedForDeletion') where ID IN (SELECT ID FROM files_all where parent_folder IN (SELECT ID FROM folders_all where statusID IN (SELECT ID FROM status_folder where name = 'MarkedForDeletion') ) );"
                   const rows = await conn.query(query);
                   console.log(rows); //[ {val: 1}, meta: ... ]
               } catch (err) {
