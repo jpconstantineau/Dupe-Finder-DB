@@ -80,7 +80,7 @@ async function agentWatchdog()
         let conn;
         try {
                 conn = await pool.getConnection();
-                const query = "UPDATE agent_details SET statusName='NotReady' where statusName = 'Ready' AND accessed < NOW() - INTERVAL 5 MINUTE;"
+                const query = "UPDATE agents SET statusID=(SELECT ID FROM status_agent where name = 'NotReady') where statusID IN (SELECT ID FROM status_agent where name = 'Ready') AND accessed < NOW() - INTERVAL 5 MINUTE;"
                 const rows = await conn.query(query);
                 console.log(rows); //[ {val: 1}, meta: ... ]
             } catch (err) {
