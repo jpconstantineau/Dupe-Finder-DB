@@ -79,6 +79,21 @@ const pool = mariadb.createPool({
               } finally {
                   if (conn)  conn.end();
               }
+              console.log('folderdeleteWatchdog - check if ReadyForDeletion');
+              try {
+                      conn = await pool.getConnection();
+                      const query = "UPDATE folders_all SET statusID=(SELECT ID FROM status_folder where name = 'ReadyForDeletion') where "+
+                      "ID IN (SELECT ID FROM folders_all WHERE statusID IN (SELECT ID FROM status_folder where name = 'MarkedForDeletion')) "+
+                      "AND ID NOT IN(SELECT parent_folder FROM files_all) "+
+                      "AND ID NOT IN(SELECT parent_folder FROM folders_all);"
+                      const rows = await conn.query(query);
+                      console.log(rows); //[ {val: 1}, meta: ... ]
+                  } catch (err) {
+                      console.log(err);
+                      throw err;
+                  } finally {
+                      if (conn)  conn.end();
+                  }   
           await new Promise(resolve => setTimeout(resolve, throttledelay));
       }
   }
