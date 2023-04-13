@@ -40,14 +40,14 @@ folderrootInit();
 /********************************/
 /* Generic Folder CONTROLLER API */
 import { getFolder, postFolder, folderInit } from './controllers/folder.js'
-app.get("/folder", getFolder);
+app.get("/folder/:agentid", getFolder);
 app.post("/folder", postFolder);
 folderInit();
 
 /********************************/
 /* Generic File  CONTROLLER API */
 import { getFile, postFile, fileInit  } from './controllers/file.js'
-app.get("/file", getFile);
+app.get("/file/:agentid", getFile);
 app.post("/file", postFile);
 fileInit();
 
@@ -55,7 +55,7 @@ fileInit();
 /********************************/
 /* Hasher        CONTROLLER API */
 import { getFileHash, putFileHash, hashInit  } from './controllers/filehash.js'
-app.get("/filehash", getFileHash);
+app.get("/filehash/:agentid", getFileHash);
 app.put("/filehash", putFileHash);
 hashInit();
 
@@ -63,7 +63,7 @@ hashInit();
 /********************************/
 /* File Deleter  CONTROLLER API */
 import { getFileDelete, putFileDelete, filedeleteInit  } from './controllers/filedelete.js'
-app.get("/filedelete", getFileDelete);
+app.get("/filedelete/:agentid", getFileDelete);
 app.put("/filedelete", putFileDelete);
 filedeleteInit();
 
@@ -71,7 +71,7 @@ filedeleteInit();
 /********************************/
 /* Folder Deleter CONTROLLER API */
 import { getFolderDelete, putFolderDelete, folderdeleteInit  } from './controllers/folderdelete.js'
-app.get("/folderdelete", getFolderDelete);
+app.get("/folderdelete/:agentid", getFolderDelete);
 app.put("/folderdelete", putFolderDelete);
 folderdeleteInit();
 

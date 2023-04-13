@@ -26,8 +26,54 @@ function twoDigits(d) {
   };
   
   
+  
 
-async function getFolder(req, res) {}
+  async function folderCalledUpdate(id) 
+  {
+      let conn;
+      try {
+              conn = await pool.getConnection();
+              const query = "UPDATE folders_all SET statusID = (SELECT ID FROM status_folder WHERE name = 'Progressing') where ID = " + id + " ;"
+              const rows = await conn.query(query);
+              console.log(rows); //[ {val: 1}, meta: ... ]
+          } catch (err) {
+              console.log(err);
+              throw err;
+          } finally {
+              if (conn)  conn.end();
+          } 
+  }
+  
+
+async function getFolder(req, res) {
+    console.log('/getFolder/:agentid '+req.params.agentid);
+    let response = [];
+    let conn;
+    try {
+      conn = await pool.getConnection();
+  
+    // SELECT ID FROM agents where hostname = req.params.agentid
+  
+      const rows = await conn.query("SELECT ID, name FROM folders_all where agentid ='" + req.params.agentid + "' AND statusID = (SELECT ID FROM status_folder WHERE name = 'Pending') ORDER by ID ASC LIMIT 1;");
+      console.log(rows); //[ {val: 1}, meta: ... ]
+    if (rows.length > 0)
+    {
+      response = rows[0];
+      setTimeout(folderCalledUpdate, 15, rows[0].ID);
+  
+    }
+    } catch (err) {
+      console.log(err);
+      throw err;
+    } finally {
+    res.status(200);
+    res.json(response);
+    if (conn) return conn.end();
+    }
+  }
+
+
+
 async function postFolder(req, res) {}
 
 
